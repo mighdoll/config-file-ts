@@ -21,5 +21,6 @@
     "dev": "tsc",
     "dist": "rollup -c"
   },
+  "files": ["dist", "src"],
   "license": "MIT"
 }
