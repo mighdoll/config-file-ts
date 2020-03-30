@@ -7,8 +7,16 @@ export default {
     format: "cjs",
     sourcemap: true
   },
-  plugins: [
-    typescript2()
-  ],
-  external: ["fs", "path", "events", "util", "assert", "typescript", "glob", "module"]
+  plugins: [typescript2()],
+  external: [
+    "fs",
+    "path",
+    "events",
+    "os",
+    "util",
+    "assert",
+    "typescript",
+    "glob",
+    "module"
+  ]
 };

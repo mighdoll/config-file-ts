@@ -1,6 +1,6 @@
 import { compileConfigIfNecessary } from "./compileUtil";
-import Module from "module";
-import fs from "fs";
+import os from "os";
+import path from "path";
 
 /** Load a typescript configuration file.
  * For speed, the typescript file is transpiled to javascript and cached.
@@ -9,23 +9,23 @@ import fs from "fs";
  * @param outDir location to store the compiled javascript.
  * @returns the default exported value from the configuration file or undefined
  */
-export function loadTsConfig<T>(tsFile: string, outDir: string): T | undefined {
-  const jsConfig = compileConfigIfNecessary(tsFile, outDir);
+export function loadTsConfig<T>(
+  tsFile: string,
+  outDir?: string
+): T | undefined {
+  const realOutDir = outDir || defaultOutDir();
+  const jsConfig = compileConfigIfNecessary(tsFile, realOutDir);
   if (!jsConfig) {
     return undefined;
   }
 
-  // const pathToConfig = ("./"+ jsConfig);
-  // const config = require(pathToConfig); // this fails, not sure why.
-  // return config.default;
-
-  const configText = fs.readFileSync(jsConfig, { encoding: "utf8" });
-  const config = loadJsModule(configText);
+  const end = jsConfig.length - path.extname(jsConfig).length;
+  const requirePath = jsConfig.slice(0, end);
+  const config = require(requirePath);
   return config.default;
 }
 
-function loadJsModule(code: string): any {
-  const module = new Module("");
-  (module as any)._compile(code, "");
-  return module.exports;
+function defaultOutDir(): string {
+  // TODO: add a subdir based on the src file path, to ensure uniqueness
+  return path.join(os.homedir(), ".cache", "config-ts");
 }

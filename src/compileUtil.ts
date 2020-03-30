@@ -4,7 +4,7 @@ import { tsCompile } from "./tsCompile";
 import ts from "typescript";
 import fs from "fs";
 
-/** return true if any files need compiling */
+/** Return true if any files need compiling */
 export function needsCompile(srcGlobs: string[], outDir: string): boolean {
   const files = srcGlobs.flatMap(src => glob.sync(src));
   const srcDestPairs = compilationPairs(files, outDir);
@@ -21,8 +21,9 @@ export function expectFilesExist(files: string[]): boolean {
   return true;
 }
 
+/** Return the name of the js file */
 export function jsOutFile(tsFile: string, outDir: string): string {
-  const outFile = changeSuffix(tsFile, ".js");
+  const outFile = changeSuffix(path.basename(tsFile), ".js");
   return path.join(outDir, outFile);
 }
 
@@ -62,9 +63,7 @@ export function compileConfigIfNecessary(tsFile: string, outDir: string): string
     return undefined;
   }
 
-  const jsFile = changeSuffix(tsFile, ".js");
-  const jsFilePath = path.join(outDir, jsFile);
-  return jsFilePath;
+  return jsOutFile(tsFile, outDir);
 }
 
 function compilationPairs(srcFiles: string[], outDir: string): [string, string][] {
