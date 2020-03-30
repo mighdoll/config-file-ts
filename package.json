@@ -23,6 +23,7 @@
   "devDependencies": {
     "@types/glob": "^7.1.1",
     "@types/node": "^13.9.5",
+    "chai": "^4.2.0",
     "jest": "^25.2.4",
     "rollup": "^2.2.0",
     "rollup-plugin-typescript2": "^0.27.0",
