@@ -27,14 +27,14 @@
     "@types/node": "^13.9.5",
     "chai": "^4.2.0",
     "jest": "^25.2.4",
+    "rimraf": "^3.0.2",
     "rollup": "^2.2.0",
     "rollup-plugin-typescript2": "^0.27.0",
     "ts-jest": "^25.3.0"
   },
   "scripts": {
     "test": "jest",
-    "dev": "tsc",
-    "dist": "rollup -c"
+    "dist": "rimraf dist && rollup -c"
   },
   "repository": {
     "type": "git",
