@@ -1,6 +1,6 @@
 {
   "name": "config-ts",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "main": "dist/index.js",
   "description": "Typescript for configuration files. Types for safety. Compiled for speed.",
   "dependencies": {
