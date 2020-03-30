@@ -13,5 +13,5 @@ export default {
     typescript2(),
     // rollupTerser() // minify step. Comment this out to review bundle contents
   ],
-  external: ["fs", "path", "events", "util", "assert", "typescript", "glob"]
+  external: ["fs", "path", "events", "util", "assert", "typescript", "glob", "module"]
 };
