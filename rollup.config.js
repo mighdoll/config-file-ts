@@ -11,12 +11,8 @@ export default {
   external: [
     "fs",
     "path",
-    "events",
     "os",
-    "util",
-    "assert",
     "typescript",
-    "glob",
-    "module"
+    "glob"
   ]
 };
