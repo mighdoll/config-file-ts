@@ -1,5 +1,5 @@
-## config-ts
-*Why use Typescript for configuration files?*
+## config-file-ts
+*Just use Typescript for configuration files*
 ####
 
 Typescript is more syntactically **flexible** than JSON. Comments are allowed. Keys needn't be quoted. 
@@ -10,11 +10,11 @@ Typescript allows **light programming** in config files. Share variables, use ut
 Typescript **Types** provide free error checking, and free IDE support for getting config files right.
 
 ### Fast
-Parsing typescript config files is plenty quick. config-ts caches the typescript output. 
+Parsing typescript config files is plenty quick. config-file-ts caches the typescript output. 
 
 ### How to use
 ```bash
-$ yarn add config-ts
+$ yarn add config-file-ts
 ```
 
 In the config file, export default. ```my.config.ts```:
