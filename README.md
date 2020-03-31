@@ -10,14 +10,14 @@ Typescript allows **light programming** in config files. Share variables, use ut
 Typescript **Types** provide free error checking, and free IDE support for getting config files right.
 
 ### Fast
-Parsing typescript config files is plenty quick, especially because config-ts caches the typescript compile. 
+Parsing typescript config files is plenty quick. config-ts caches the typescript output. 
 
-### how to use
+### How to use
 ```bash
 $ yarn add config-ts
 ```
 
-In the config file, export the config as default. ```myConfig.ts```:
+In the config file, export default. ```my.config.ts```:
 ```ts
 export default {
   entry: "my stuff" // comments are welcome!
@@ -25,22 +25,21 @@ export default {
 ````
 
 
-Or add some types and scripting. ```myConfig.ts```:
+Feel free to add types and scripting. ```my.config.ts```:
 ```ts
 import os from "os";
+import { MyConfig } from "./MyProgram";
 
 export default {
-  entry: `${os.userInfo().username}'s stuff`  // use code in the config
-} as MyConfig;  // typecheck the config
+  entry: `${os.userInfo().username}'s stuff`  // use scripting in the config file
+} as MyConfig;                                // typecheck the config file
 ````
 
-
-And then read in the config file like so:
+Read the config file from your program. ```MyProgram.ts```:
 ```ts
 export interface MyConfig {
   entry?: string;
 }
 
-const config = loadTsConfig<MyConfig>("myConfig.ts");
+const config = loadTsConfig<MyConfig>("my.config.ts");
 ```
-
