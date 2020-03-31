@@ -12,6 +12,7 @@ Typescript **types** provide free error checking, and free IDE support for getti
 ### Fast
 Parsing typescript config files is plenty quick. config-file-ts caches the typescript output. 
 
+Assuming typescript is in your environment, config-file-ts adds about 5kb to your program, or 1.5kb minified.
 ### How to use
 ```bash
 $ yarn add config-file-ts
