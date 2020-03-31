@@ -4,7 +4,7 @@ import { loadTsConfig, defaultOutDir } from "../src/loadTsConfig";
 import { SomeConfig, someConfigUtil } from "./SomeConfig";
 import rimraf from "rimraf";
 
-test("test load", () => {
+test("loading a config file", () => {
   const configFile = "test/example.config.ts";
   const outDir = defaultOutDir(configFile);
   rimraf.sync(outDir);
