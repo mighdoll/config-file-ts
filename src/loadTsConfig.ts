@@ -13,7 +13,7 @@ export function loadTsConfig<T>(
   tsFile: string,
   outDir?: string
 ): T | undefined {
-  const realOutDir = outDir || defaultOutDir();
+  const realOutDir = outDir || defaultOutDir(tsFile);
   const jsConfig = compileConfigIfNecessary(tsFile, realOutDir);
   if (!jsConfig) {
     return undefined;
@@ -25,7 +25,12 @@ export function loadTsConfig<T>(
   return config.default;
 }
 
-function defaultOutDir(): string {
-  // TODO: add a subdir based on the src file path, to ensure uniqueness
-  return path.join(os.homedir(), ".cache", "config-ts");
+/** @return the directory that will be used to store the files */
+export function defaultOutDir(tsFile: string): string {
+  const tsPath = path.resolve(tsFile);
+  const smushedPath = tsPath
+    .split(path.sep)
+    .join("-")
+    .slice(1);
+  return path.join(os.homedir(), ".cache", "config-file-ts", smushedPath);
 }
