@@ -1,13 +1,13 @@
 ## config-file-ts
-*Just use Typescript for configuration files*
+*Just use typescript for configuration files.*
 ####
 
 Typescript is more syntactically **flexible** than JSON. Comments are allowed. Keys needn't be quoted. 
 Arrays can have trailing commas.
 
-Typescript allows **light programming** in config files. Share variables, use utility functions, etc.
+Typescript allows a little **programming** in config files. Share variables, use utility functions, etc.
 
-Typescript **Types** provide free error checking, and free IDE support for getting config files right.
+Typescript **types** provide free error checking, and free IDE support for getting config files right.
 
 ### Fast
 Parsing typescript config files is plenty quick. config-file-ts caches the typescript output. 
@@ -20,14 +20,14 @@ $ yarn add config-file-ts
 In the config file, export default. ```my.config.ts```:
 ```ts
 export default {
-  entry: "my stuff" // comments are welcome!
+  entry: "my stuff" // comments are welcome now
 };
 ````
 
 
 Feel free to add types and scripting. ```my.config.ts```:
 ```ts
-import os from "os";
+import os from "os";			      // use installed libraries in the config
 import { MyConfig } from "./MyProgram";
 
 export default {
@@ -35,7 +35,7 @@ export default {
 } as MyConfig;                                // typecheck the config file
 ````
 
-Read the config file from your program. ```MyProgram.ts```:
+Read the config file in your program. ```MyProgram.ts```:
 ```ts
 export interface MyConfig {
   entry?: string;
