@@ -25,7 +25,7 @@ export function loadTsConfig<T>(
   return config.default;
 }
 
-/** @return the directory that will be used to store the files */
+/** @return the directory that will be used to store transpilation output. */
 export function defaultOutDir(tsFile: string): string {
   const tsPath = path.resolve(tsFile);
   const smushedPath = tsPath
