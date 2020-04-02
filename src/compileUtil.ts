@@ -4,6 +4,8 @@ import { tsCompile } from "./tsCompile";
 import ts from "typescript";
 import fs from "fs";
 
+const fsRoot = path.parse(process.cwd()).root;
+
 /** Return true if any files need compiling */
 export function needsCompile(srcGlobs: string[], outDir: string): boolean {
   const files = srcGlobs.flatMap(src => glob.sync(src));
@@ -21,16 +23,40 @@ export function expectFilesExist(files: string[]): boolean {
   return true;
 }
 
-/** Return the name of the js file */
+/** @return path to the js file that will be produced by typescript compilation */
 export function jsOutFile(tsFile: string, outDir: string): string {
+  const tsAbsolutePath = path.resolve(tsFile);
+  const tsAbsoluteDir = path.dirname(tsAbsolutePath);
+  const dirFromRoot = path.relative(fsRoot, tsAbsoluteDir);
+  const jsDir = path.join(outDir, dirFromRoot);
   const outFile = changeSuffix(path.basename(tsFile), ".js");
-  return path.join(outDir, outFile);
+  return path.join(jsDir, outFile);
 }
+
+
+/* 
+We set rootDir to fsRoot for tsc compilation.
+
+That means that the .js output files produced by typescript will be in a deep tree
+of subdirectories mirroring the path from / to the source file.  
+  e.g. /home/lee/proj/foo.ts will output to outdir/home/proj/lee/foo.js.
+
+We need to set a rootDir so that the output tree js files produced by typescript is
+predictable prior to compilation. Without a rootDir, tsc will make an output tree that
+is as short as possible depending on the imports used by the .ts files. Shorter is nice, 
+but the unpredictability breaks checks for on-demand compilation.
+
+A .ts file can import from parent directories.
+  e.g. import * from "../util". 
+So we use the file system root as the rootDir to be conservative in handling
+potential parent directory imports.
+*/
 
 export function compileIfNecessary(sources: string[], outDir: string): boolean {
   if (needsCompile(sources, outDir)) {
     return tsCompile(sources, {
       outDir,
+      rootDir: fsRoot,
       module: ts.ModuleKind.CommonJS,
       moduleResolution: ts.ModuleResolutionKind.NodeJs,
       esModuleInterop: true,
@@ -52,7 +78,10 @@ export function compileIfNecessary(sources: string[], outDir: string): boolean {
  * @returns the path to the compiled javascript config file,
  *   or undefined if the compilation fails.
  */
-export function compileConfigIfNecessary(tsFile: string, outDir: string): string | undefined {
+export function compileConfigIfNecessary(
+  tsFile: string,
+  outDir: string
+): string | undefined {
   if (!fs.existsSync(tsFile)) {
     console.error("config file:", tsFile, " not found");
     return undefined;
@@ -66,7 +95,10 @@ export function compileConfigIfNecessary(tsFile: string, outDir: string): string
   return jsOutFile(tsFile, outDir);
 }
 
-function compilationPairs(srcFiles: string[], outDir: string): [string, string][] {
+function compilationPairs(
+  srcFiles: string[],
+  outDir: string
+): [string, string][] {
   return srcFiles.map(tsFile => {
     return [tsFile, jsOutFile(tsFile, outDir)];
   });
