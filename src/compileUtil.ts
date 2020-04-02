@@ -33,7 +33,6 @@ export function jsOutFile(tsFile: string, outDir: string): string {
   return path.join(jsDir, outFile);
 }
 
-
 /* 
 We set rootDir to fsRoot for tsc compilation.
 
@@ -54,7 +53,7 @@ potential parent directory imports.
 
 export function compileIfNecessary(sources: string[], outDir: string): boolean {
   if (needsCompile(sources, outDir)) {
-    return tsCompile(sources, {
+    const compileResult = tsCompile(sources, {
       outDir,
       rootDir: fsRoot,
       module: ts.ModuleKind.CommonJS,
@@ -65,8 +64,51 @@ export function compileIfNecessary(sources: string[], outDir: string): boolean {
       target: ts.ScriptTarget.ES2019,
       noEmitOnError: true
     });
+    linkNodeModules(outDir);
+    return compileResult;
   }
   return true;
+}
+
+/** Put a link in the output directory to node_modules.
+ */
+function linkNodeModules(outDir: string): void {
+  /*
+   * Note that this only puts a link to the single node_modules directory
+   * that's closest by. 
+   * 
+   * But I think node's module resolution will search multiple 
+   * parent directories for multiple node_modules at runtime. So just one
+   * node_modules link may be insufficient in some complicated cases.
+   * 
+   * If supporting the more complicated case is worthwhile, we can consider 
+   * e.g. encoding a full list of node_modules and setting NODE_PATH instead 
+   * of the symlink approach here.
+   */
+  const nodeModules = nearestNodeModules(process.cwd());
+  if (nodeModules) {
+    const linkToModules = path.join(outDir, "node_modules");
+    fs.symlinkSync(nodeModules, linkToModules);
+  }
+}
+
+/** @return the resolved path to the nearest node_modules file,
+ * either in the provided directory or a parent.
+ */
+export function nearestNodeModules(dir: string): string | undefined {
+  const resolvedDir = path.resolve(dir);
+  const modulesFile = path.join(resolvedDir, "node_modules");
+
+  if (fs.existsSync(modulesFile)) {
+    return modulesFile;
+  } else {
+    const { dir: parent, root } = path.parse(resolvedDir);
+    if (parent !== root) {
+      return nearestNodeModules(parent);
+    } else {
+      return undefined;
+    }
+  }
 }
 
 /**
