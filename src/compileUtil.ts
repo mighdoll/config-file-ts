@@ -75,21 +75,32 @@ export function compileIfNecessary(sources: string[], outDir: string): boolean {
 function linkNodeModules(outDir: string): void {
   /*
    * Note that this only puts a link to the single node_modules directory
-   * that's closest by. 
-   * 
-   * But I think node's module resolution will search multiple 
+   * that's closest by.
+   *
+   * But I think node's module resolution will search multiple
    * parent directories for multiple node_modules at runtime. So just one
    * node_modules link may be insufficient in some complicated cases.
-   * 
-   * If supporting the more complicated case is worthwhile, we can consider 
-   * e.g. encoding a full list of node_modules and setting NODE_PATH instead 
+   *
+   * If supporting the more complicated case is worthwhile, we can consider
+   * e.g. encoding a full list of node_modules and setting NODE_PATH instead
    * of the symlink approach here.
    */
   const nodeModules = nearestNodeModules(process.cwd());
   if (nodeModules) {
     const linkToModules = path.join(outDir, "node_modules");
-    fs.symlinkSync(nodeModules, linkToModules);
+    symLinkForce(nodeModules, linkToModules);
   }
+}
+
+/** create a symlink, replacing any existing linkfile */
+function symLinkForce(existing: string, link: string): void {
+  if (fs.existsSync(link)) {
+    if (!fs.statSync(link).isSymbolicLink()) {
+      throw `symLinkForce refusing to unlink non-symlink ${link}`;
+    }
+    fs.unlinkSync(link);
+  }
+  fs.symlinkSync(existing, link);
 }
 
 /** @return the resolved path to the nearest node_modules file,
