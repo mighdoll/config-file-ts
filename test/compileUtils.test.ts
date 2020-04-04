@@ -1,11 +1,8 @@
 
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
 import "chai/register-should";
-import { loadTsConfig, defaultOutDir } from "../src/loadTsConfig";
-import { SomeConfig, someConfigUtil } from "./SomeConfig";
-import rimraf from "rimraf";
-import { jsOutFile, nearestNodeModules } from "../src/compileUtil";
 import path from "path";
+import { jsOutFile, nearestNodeModules } from "../src/compileUtil";
 import { exampleConfigFile } from "./loadTsConfig.test";
 
 test("jsOutFile", () => {
