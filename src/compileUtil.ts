@@ -93,9 +93,9 @@ function linkNodeModules(outDir: string): void {
 }
 
 /** create a symlink, replacing any existing linkfile */
-function symLinkForce(existing: string, link: string): void {
+export function symLinkForce(existing: string, link: string): void {
   if (fs.existsSync(link)) {
-    if (!fs.statSync(link).isSymbolicLink()) {
+    if (!fs.lstatSync(link).isSymbolicLink()) {
       throw `symLinkForce refusing to unlink non-symlink ${link}`;
     }
     fs.unlinkSync(link);
