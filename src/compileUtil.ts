@@ -17,7 +17,6 @@ export function needsCompile(srcGlobs: string[], outDir: string): boolean {
 export function expectFilesExist(files: string[]): boolean {
   const missing = files.find(file => !fs.existsSync(file));
   if (missing) {
-    console.error(`file ${missing} not found`);
     return false;
   }
   return true;
