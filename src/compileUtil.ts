@@ -64,7 +64,9 @@ export function compileIfNecessary(sources: string[], outDir: string): boolean {
       target: ts.ScriptTarget.ES2019,
       noEmitOnError: true
     });
-    linkNodeModules(outDir);
+    if (compileResult) {
+      linkNodeModules(outDir);
+    }
     return compileResult;
   }
   return true;
