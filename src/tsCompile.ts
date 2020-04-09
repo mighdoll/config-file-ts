@@ -1,5 +1,6 @@
 import * as ts from "typescript";
 import { Program, EmitResult } from "typescript";
+import path from "path";
 
 export function tsCompile(fileNames: string[], options: ts.CompilerOptions): boolean {
   console.log("compiling:", fileNames);
@@ -19,8 +20,10 @@ function logDiagnostics(program: Program, emitResult: EmitResult): void {
         diagnostic.start!
       );
       const message = ts.flattenDiagnosticMessageText(diagnostic.messageText, "\n");
+      
+      const filePath = path.resolve(diagnostic.file.fileName);
       console.log(
-        `${diagnostic.file.fileName} (${line + 1},${character + 1}): ${message}`
+        `tsc: (${filePath}:${line + 1}:${character + 1}): ${message}`
       );
     } else {
       console.log(ts.flattenDiagnosticMessageText(diagnostic.messageText, "\n"));
