@@ -8,14 +8,14 @@ const fsRoot = path.parse(process.cwd()).root;
 
 /** Return true if any files need compiling */
 export function needsCompile(srcGlobs: string[], outDir: string): boolean {
-  const files = srcGlobs.flatMap(src => glob.sync(src));
+  const files = srcGlobs.flatMap((src) => glob.sync(src));
   const srcDestPairs = compilationPairs(files, outDir);
   return anyOutDated(srcDestPairs);
 }
 
 /** Return true if all files exist on the filesystem */
 export function expectFilesExist(files: string[]): boolean {
-  const missing = files.find(file => !fs.existsSync(file));
+  const missing = files.find((file) => !fs.existsSync(file));
   if (missing) {
     return false;
   }
@@ -50,7 +50,11 @@ So we use the file system root as the rootDir to be conservative in handling
 potential parent directory imports.
 */
 
-export function compileIfNecessary(sources: string[], outDir: string): boolean {
+export function compileIfNecessary(
+  sources: string[],
+  outDir: string,
+  strict = true
+): boolean {
   if (needsCompile(sources, outDir)) {
     const compileResult = tsCompile(sources, {
       outDir,
@@ -59,9 +63,9 @@ export function compileIfNecessary(sources: string[], outDir: string): boolean {
       moduleResolution: ts.ModuleResolutionKind.NodeJs,
       esModuleInterop: true,
       skipLibCheck: true,
-      strict: true,
+      strict,
       target: ts.ScriptTarget.ES2019,
-      noEmitOnError: true
+      noEmitOnError: true,
     });
     if (compileResult) {
       linkNodeModules(outDir);
@@ -153,7 +157,7 @@ function compilationPairs(
   srcFiles: string[],
   outDir: string
 ): [string, string][] {
-  return srcFiles.map(tsFile => {
+  return srcFiles.map((tsFile) => {
     return [tsFile, jsOutFile(tsFile, outDir)];
   });
 }
