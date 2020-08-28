@@ -138,14 +138,15 @@ export function nearestNodeModules(dir: string): string | undefined {
  */
 export function compileConfigIfNecessary(
   tsFile: string,
-  outDir: string
+  outDir: string,
+  strict = true
 ): string | undefined {
   if (!fs.existsSync(tsFile)) {
     console.error("config file:", tsFile, " not found");
     return undefined;
   }
 
-  const success = compileIfNecessary([tsFile], outDir);
+  const success = compileIfNecessary([tsFile], outDir, strict);
   if (!success) {
     return undefined;
   }

@@ -11,10 +11,11 @@ import path from "path";
  */
 export function loadTsConfig<T>(
   tsFile: string,
-  outDir?: string
+  outDir?: string,
+  strict = true
 ): T | undefined {
   const realOutDir = outDir || defaultOutDir(tsFile, "config-file-ts");
-  const jsConfig = compileConfigIfNecessary(tsFile, realOutDir);
+  const jsConfig = compileConfigIfNecessary(tsFile, realOutDir, strict);
   if (!jsConfig) {
     return undefined;
   }
