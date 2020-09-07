@@ -55,8 +55,10 @@ export function compileIfNecessary(
   outDir: string,
   strict = true
 ): boolean {
-  if (needsCompile(sources, outDir)) {
-    const compileResult = tsCompile(sources, {
+  const sourceSet = new Set([...sources, ...extendedSources(outDir)]);
+  const allSources = [...sourceSet];
+  if (needsCompile(allSources, outDir)) {
+    const { compiled, localSources } = tsCompile(sources, {
       outDir,
       rootDir: fsRoot,
       module: ts.ModuleKind.CommonJS,
@@ -65,15 +67,37 @@ export function compileIfNecessary(
       skipLibCheck: true,
       strict,
       target: ts.ScriptTarget.ES2019,
+      noImplicitAny: false,
       noEmitOnError: true,
     });
-    if (compileResult) {
+    if (compiled) {
+      saveExtendedSources(outDir, localSources);
       linkNodeModules(outDir);
     }
-    return compileResult;
+    return compiled;
   }
   return true;
 }
+
+/** local sources used in last compilation, including imports */
+function extendedSources(outDir: string): string[] {
+  const file = sourcesFile(outDir);
+  if (!fs.existsSync(file)) {
+    return [];
+  }
+  const lines = fs.readFileSync(file, "utf8");
+  return lines.split("\n");
+}
+
+function sourcesFile(outDir: string): string {
+  return path.join(outDir, "_sources");
+}
+
+function saveExtendedSources(outDir: string, allSources: string[]): void {
+  const file = sourcesFile(outDir);
+  fs.writeFileSync(file, allSources.join("\n"));
+}
+
 
 /** Put a link in the output directory to node_modules.
  */
