@@ -64,6 +64,7 @@ export function compileIfNecessary(
       module: ts.ModuleKind.CommonJS,
       moduleResolution: ts.ModuleResolutionKind.NodeJs,
       esModuleInterop: true,
+      resolveJsonModule: true,
       skipLibCheck: true,
       strict,
       target: ts.ScriptTarget.ES2019,
