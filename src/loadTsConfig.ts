@@ -1,5 +1,5 @@
 import { compileConfigIfNecessary } from "./compileUtil";
-import os from "os";
+import os, { platform } from "os";
 import path from "path";
 
 /** Load a typescript configuration file.
@@ -32,9 +32,12 @@ export function defaultOutDir(
   programName: string = ""
 ): string {
   const tsPath = path.resolve(tsFile);
-  const smushedPath = tsPath
+  let smushedPath = tsPath
     .split(path.sep)
     .join("-")
     .slice(1);
+  if (platform.name === "win32") {
+    smushedPath = smushedPath.replace(/^:/, "");
+  }
   return path.join(os.homedir(), ".cache", programName, smushedPath);
 }
