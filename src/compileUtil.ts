@@ -1,4 +1,4 @@
-import glob from "glob";
+import { glob } from "glob";
 import path from "path";
 import { tsCompile } from "./tsCompile";
 import ts from "typescript";
@@ -97,7 +97,6 @@ function saveExtendedSources(outDir: string, allSources: string[]): void {
   const file = sourcesFile(outDir);
   fs.writeFileSync(file, allSources.join("\n"));
 }
-
 
 /** Put a link in the output directory to node_modules.
  */
