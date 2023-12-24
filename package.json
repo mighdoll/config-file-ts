@@ -34,7 +34,7 @@
   },
   "scripts": {
     "test": "jest",
-    "dist": "rimraf dist && rollup -c"
+    "prepublish": "rimraf dist && rollup -c"
   },
   "repository": {
     "type": "git",
