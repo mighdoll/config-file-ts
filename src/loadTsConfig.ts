@@ -36,7 +36,7 @@ export function defaultOutDir(
     .split(path.sep)
     .join("-")
     .slice(1);
-  if (platform.name === "win32") {
+  if (platform() === "win32") {
     smushedPath = smushedPath.replace(/^:/, "");
   }
   return path.join(os.homedir(), ".cache", programName, smushedPath);
