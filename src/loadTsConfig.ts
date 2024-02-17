@@ -14,7 +14,7 @@ export function loadTsConfig<T>(
   outDir?: string,
   strict = true
 ): T | undefined {
-  const realOutDir = outDir || defaultOutDir(tsFile, "config-file-ts");
+  const realOutDir = outDir || defaultOutDir(tsFile);
   const jsConfig = compileConfigIfNecessary(tsFile, realOutDir, strict);
   if (!jsConfig) {
     return undefined;
@@ -29,7 +29,7 @@ export function loadTsConfig<T>(
 /** @return the directory that will be used to store transpilation output. */
 export function defaultOutDir(
   tsFile: string,
-  programName: string = ""
+  programName: string = "config-file-ts"
 ): string {
   const tsPath = path.resolve(tsFile);
   let smushedPath = tsPath
