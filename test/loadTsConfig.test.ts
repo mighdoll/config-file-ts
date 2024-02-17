@@ -14,4 +14,13 @@ test("loading a config file", () => {
   expect(conf.foo).eq(someConfigUtil());
   expect(conf.bar).deep.eq([1, 2, 3]);
 });
+
+test("loading a config file twice does not recompile", () => {
+  const outDir = defaultOutDir(exampleConfigFile);
+  rimrafSync(outDir);
+  const compiles = _withCompileCount(() => {
+    loadTsConfig(exampleConfigFile);
+    loadTsConfig(exampleConfigFile);
+  });
+  expect(compiles).eq(1);
 });

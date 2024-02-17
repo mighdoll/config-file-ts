@@ -32,6 +32,15 @@ export function jsOutFile(tsFile: string, outDir: string): string {
   return path.join(jsDir, outFile);
 }
 
+// for tests
+export let _compileCount = 0; 
+export function _withCompileCount(fn:() => void):number {
+  _compileCount = 0;
+  fn();
+  return _compileCount;
+}
+
+
 /* 
 We set rootDir to fsRoot for tsc compilation.
 
@@ -50,6 +59,7 @@ So we use the file system root as the rootDir to be conservative in handling
 potential parent directory imports.
 */
 
+
 export function compileIfNecessary(
   sources: string[],
   outDir: string,
@@ -58,6 +68,7 @@ export function compileIfNecessary(
   const sourceSet = new Set([...sources, ...extendedSources(outDir)]);
   const allSources = [...sourceSet];
   if (needsCompile(allSources, outDir)) {
+    _compileCount++;
     const { compiled, localSources } = tsCompile(sources, {
       outDir,
       rootDir: fsRoot,
