@@ -1,36 +1,36 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
-import "chai/register-should";
 import path from "path";
 import fs from "fs";
 import {
   jsOutFile,
   nearestNodeModules,
-  symLinkForce
+  symLinkForce,
 } from "../src/compileUtil";
 import { exampleConfigFile } from "./loadTsConfig.test";
+import { test, expect } from "vitest";
 
 test("jsOutFile", () => {
   const cwd = path.resolve(process.cwd());
-  jsOutFile(exampleConfigFile, "out").should.equal(
-    path.join("out", cwd, "test", "example.config.js")
-  );
+  const outFile = jsOutFile(exampleConfigFile, "out");
+  const expected = path.join("out", cwd, "test", "example.config.js");
+  expect(outFile).toEqual(expected);
 });
 
 test("nearestNodeModules", () => {
   const nodeModules = nearestNodeModules("test")!;
   const expectedPath = path.join(path.resolve(process.cwd()), "node_modules");
-  nodeModules.should.equal(expectedPath);
+  expect(nodeModules).eq(expectedPath);
 });
 
 test("symLinkForce deletes if necessary", () => {
   const link = "/tmp/symLinkTest";
   safeDelete();
   try {
-    fs.existsSync(link).should.be.false;
+    expect(fs.existsSync(link)).false;
     symLinkForce("/", link);
     symLinkForce("/", link);
-    fs.existsSync(link).should.be.true;
-    fs.lstatSync(link).isSymbolicLink().should.be.true;
+    expect(fs.existsSync(link)).true;
+    expect(fs.lstatSync(link).isSymbolicLink()).true;
   } finally {
     safeDelete();
   }

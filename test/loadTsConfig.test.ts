@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
-import "chai/register-should";
 import { rimrafSync } from "rimraf";
+import { expect, test } from "vitest";
+import { _withCompileCount } from "../src/compileUtil.ts";
 import { defaultOutDir, loadTsConfig } from "../src/loadTsConfig";
 import { SomeConfig, someConfigUtil } from "./SomeConfig";
 
@@ -10,6 +11,7 @@ test("loading a config file", () => {
   const outDir = defaultOutDir(exampleConfigFile);
   rimrafSync(outDir);
   const conf = loadTsConfig<SomeConfig>(exampleConfigFile)!;
-  conf.foo!.should.eq(someConfigUtil());
-  conf.bar!.should.deep.eq([1, 2, 3]);
+  expect(conf.foo).eq(someConfigUtil());
+  expect(conf.bar).deep.eq([1, 2, 3]);
+});
 });
