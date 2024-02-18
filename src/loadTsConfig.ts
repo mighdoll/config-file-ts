@@ -6,12 +6,13 @@ import path from "path";
  * For speed, the typescript file is transpiled to javascript and cached.
  *
  * @param T type of default export value in the configuration file
- * @param outDir location to store the compiled javascript.
+ * @param outDir location to store the compiled javascript. 
+ *  Defaults to $HOME/.cache/config-file-ts/<ts-file-path>/
  * @returns the default exported value from the configuration file or undefined
  */
 export function loadTsConfig<T>(
   tsFile: string,
-  outDir?: string,
+  outDir?: string | undefined,
   strict = true
 ): T | undefined {
   const realOutDir = outDir || defaultOutDir(tsFile);
