@@ -1,18 +1,19 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
-import path from "path";
 import fs from "fs";
+import path from "path";
+import { expect, test } from "vitest";
 import {
   jsOutFile,
   nearestNodeModules,
   symLinkForce,
 } from "../src/compileUtil";
 import { exampleConfigFile } from "./loadTsConfig.test";
-import { test, expect } from "vitest";
 
 test("jsOutFile", () => {
   const cwd = path.resolve(process.cwd());
+  const patchedCwd = cwd.replace(/^.*:\//, ""); // remove volume label on windows
   const outFile = jsOutFile(exampleConfigFile, "out");
-  const expected = path.join("out", cwd, "test", "example.config.js");
+  const expected = path.join("out", patchedCwd, "test", "example.config.js");
   expect(outFile).toEqual(expected);
 });
 
@@ -23,8 +24,8 @@ test("nearestNodeModules", () => {
 });
 
 test("symLinkForce deletes if necessary", () => {
-  const link = "/tmp/symLinkTest";
-  safeDelete();
+  const tempDir = fs.mkdtempSync("symLinkTest");
+  const link = path.join(tempDir, "link");
   try {
     expect(fs.existsSync(link)).false;
     symLinkForce("/", link);
@@ -32,12 +33,6 @@ test("symLinkForce deletes if necessary", () => {
     expect(fs.existsSync(link)).true;
     expect(fs.lstatSync(link).isSymbolicLink()).true;
   } finally {
-    safeDelete();
-  }
-
-  function safeDelete() {
-    if (fs.existsSync(link)) {
-      fs.unlinkSync(link);
-    }
+    fs.rmSync(tempDir, { recursive: true });
   }
 });
