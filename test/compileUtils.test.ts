@@ -7,15 +7,14 @@ import {
   nearestNodeModules,
   symLinkForce,
 } from "../src/compileUtil";
-import { exampleConfigFile } from "./loadTsConfig.test";
 
-test("jsOutFile", () => {
-  const cwd = path.resolve(process.cwd());
-  const patchedCwd = cwd.replace(/^.*:\//, ""); // remove volume label on windows
-  const outFile = jsOutFile(exampleConfigFile, "out");
-  const expected = path.join("out", patchedCwd, "test", "example.config.js");
+test("jsOutFile (windows)", () => {
+  const cacheDir = "C:\\Users\\lee\\.cache\\";
+  const outFile = jsOutFile("test\\example.config.ts", cacheDir);
+  const expected = `C:\\Users\\lee\\.cache\\Users\\lee\\config-file-ts\\test\\example.config.js`;
   expect(outFile).toEqual(expected);
 });
+
 
 test("nearestNodeModules", () => {
   const nodeModules = nearestNodeModules("test")!;
