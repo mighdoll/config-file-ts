@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
 import fs from "fs";
+import os from "os";
 import path from "path";
 import { expect, test } from "vitest";
 import {
@@ -9,12 +10,23 @@ import {
 } from "../src/compileUtil";
 
 test("jsOutFile (windows)", () => {
+  if (os.platform() !== "win32") return;
+
   const cacheDir = "C:\\Users\\lee\\.cache\\";
   const outFile = jsOutFile("test\\example.config.ts", cacheDir);
   const expected = `C:\\Users\\lee\\.cache\\Users\\lee\\config-file-ts\\test\\example.config.js`;
   expect(outFile).toEqual(expected);
 });
 
+test("jsOutFile (non-windows)", () => {
+  if (os.platform() === "win32") return;
+
+  const cwd = path.resolve(process.cwd());
+  const outFile = jsOutFile("test/example.config.ts", "out");
+  expect(outFile).equal(
+    path.join("out", cwd, "test", "example.config.js")
+  );
+});
 
 test("nearestNodeModules", () => {
   const nodeModules = nearestNodeModules("test")!;
