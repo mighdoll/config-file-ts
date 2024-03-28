@@ -30,7 +30,7 @@
   },
   "scripts": {
     "test": "vitest",
-    "prepublish": "rimraf dist && rollup -c"
+    "prepublishOnly": "rimraf dist && rollup -c"
   },
   "repository": {
     "type": "git",
